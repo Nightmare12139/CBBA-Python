@@ -60,7 +60,7 @@ class CBBA(object):
         # 初始化兼容性矩阵
         self.compatibility_mat = [[0] * len(self.task_types) for _ in range(len(self.agent_types))]
 
-        # 供用户扩展：设置智能体-任务类型匹配关系（哪些智能体类型可执行哪些任务类型）
+        # 用户需配置：设置智能体-任务类型匹配关系（哪些智能体类型可执行哪些任务类型）
         try:
             # 四旋翼可执行 track 任务
             self.compatibility_mat[self.agent_types.index("quad")][self.task_types.index("track")] = 1
@@ -559,7 +559,7 @@ class CBBA(object):
         # 对每个任务遍历
         for idx_task in range(self.num_tasks):
             # 检查智能体与任务的兼容性
-            # 浮点精度冗余判断
+            # 考虑浮点精度
             if self.compatibility_mat[self.AgentList[idx_agent].agent_type][self.TaskList[idx_task].task_type] > 0.5:
                 
                 # 检查路径中是否已包含任务 m
