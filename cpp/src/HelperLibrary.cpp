@@ -29,6 +29,10 @@ void create_agents_and_tasks(int num_agents, int num_tasks, const WorldInfo& wor
     agents.clear();
     tasks.clear();
 
+    if (num_agents <= 0 || num_tasks <= 0) {
+        throw std::invalid_argument("num_agents and num_tasks must be positive.");
+    }
+
     const int quad_type = index_of(config.agent_types, "quad");
     const int car_type = index_of(config.agent_types, "car");
     const int track_type = index_of(config.task_types, "track");
@@ -92,6 +96,10 @@ void create_agents_and_tasks_homogeneous(int num_agents, int num_tasks, const Wo
                                          const Config& config, std::vector<Agent>& agents, std::vector<Task>& tasks) {
     agents.clear();
     tasks.clear();
+
+    if (num_agents <= 0 || num_tasks <= 0) {
+        throw std::invalid_argument("num_agents and num_tasks must be positive.");
+    }
 
     const int quad_type = index_of(config.agent_types, "quad");
     const int track_type = index_of(config.task_types, "track");

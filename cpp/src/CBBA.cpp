@@ -15,8 +15,8 @@ CBBA::CBBA(const Config& config, std::shared_ptr<Planner> planner)
     task_types_ = config_.task_types;
 
     time_interval_list_ = {
-        static_cast<int>(std::min(config_.track_default.start_time, config_.rescue_default.start_time)),
-        static_cast<int>(std::max(config_.track_default.end_time, config_.rescue_default.end_time))
+        std::min(config_.track_default.start_time, config_.rescue_default.start_time),
+        std::max(config_.track_default.end_time, config_.rescue_default.end_time)
     };
 
     duration_flag_ = (std::min(config_.track_default.duration, config_.rescue_default.duration) > 0.0);

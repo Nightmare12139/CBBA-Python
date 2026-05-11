@@ -78,7 +78,7 @@ private:
     std::array<double, 2> space_limit_y_{};
     std::array<double, 2> space_limit_z_{};
 
-    std::vector<int> time_interval_list_;
+    std::vector<double> time_interval_list_;
 
     std::vector<int> agent_index_list_;
     std::vector<std::vector<int>> bundle_list_;

@@ -56,8 +56,22 @@ std::string extract_array(const std::string& content, const std::string& key) {
     return extract_block(content, key, '[', ']');
 }
 
+std::string escape_regex(const std::string& input) {
+    const std::string metacharacters = R"(\.^$|()[]{}*+?)";
+    std::string escaped;
+    escaped.reserve(input.size() * 2);
+    for (const char c : input) {
+        if (metacharacters.find(c) != std::string::npos) {
+            escaped.push_back('\\');
+        }
+        escaped.push_back(c);
+    }
+    return escaped;
+}
+
 std::string read_string(const std::string& content, const std::string& key, const std::string& fallback) {
-    const std::regex pattern("\\\"" + key + "\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"");
+    const std::string escaped_key = escape_regex(key);
+    const std::regex pattern("\\\"" + escaped_key + "\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"");
     std::smatch match;
     if (std::regex_search(content, match, pattern)) {
         return match[1].str();
@@ -66,7 +80,8 @@ std::string read_string(const std::string& content, const std::string& key, cons
 }
 
 bool read_bool(const std::string& content, const std::string& key, bool fallback) {
-    const std::regex pattern("\\\"" + key + "\\\"\\s*:\\s*(true|false)");
+    const std::string escaped_key = escape_regex(key);
+    const std::regex pattern("\\\"" + escaped_key + "\\\"\\s*:\\s*(true|false)");
     std::smatch match;
     if (std::regex_search(content, match, pattern)) {
         return match[1].str() == "true";
@@ -75,7 +90,8 @@ bool read_bool(const std::string& content, const std::string& key, bool fallback
 }
 
 double read_number(const std::string& content, const std::string& key, double fallback) {
-    const std::regex pattern("\\\"" + key + "\\\"\\s*:\\s*([-+0-9.eE]+)");
+    const std::string escaped_key = escape_regex(key);
+    const std::regex pattern("\\\"" + escaped_key + "\\\"\\s*:\\s*([-+0-9.eE]+)");
     std::smatch match;
     if (std::regex_search(content, match, pattern)) {
         return std::stod(match[1].str());

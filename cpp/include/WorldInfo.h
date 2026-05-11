@@ -14,9 +14,10 @@ struct WorldInfo {
     WorldInfo() = default;
     WorldInfo(const std::array<double, 2>& x, const std::array<double, 2>& y, const std::array<double, 2>& z)
         : limit_x(x), limit_y(y), limit_z(z) {
-        distance_max = std::sqrt(std::pow(limit_x[1] - limit_x[0], 2.0) +
-                                 std::pow(limit_y[1] - limit_y[0], 2.0) +
-                                 std::pow(limit_z[1] - limit_z[0], 2.0));
+        const double dx = limit_x[1] - limit_x[0];
+        const double dy = limit_y[1] - limit_y[0];
+        const double dz = limit_z[1] - limit_z[0];
+        distance_max = std::sqrt(dx * dx + dy * dy + dz * dz);
     }
 };
 
