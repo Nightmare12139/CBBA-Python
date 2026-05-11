@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 #include <limits>
 #include <string>
 #include <stdexcept>
@@ -59,6 +60,7 @@ std::pair<std::vector<std::vector<int>>, std::vector<std::vector<double>>> CBBA:
         }
 
         if ((iter_idx - iter_prev) > (2 * num_agents_)) {
+            std::cerr << "Algorithm did not converge due to communication trouble." << std::endl;
             done_flag = true;
         } else if ((iter_idx - iter_prev) > num_agents_) {
             done_flag = true;

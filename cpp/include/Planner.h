@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <stdexcept>
 
 namespace cbba {
 
@@ -18,7 +19,7 @@ public:
 
     double travel_time(const Position& from, const Position& to, double speed) const {
         if (speed <= 0.0) {
-            return 0.0;
+            throw std::invalid_argument("Speed must be positive for travel_time.");
         }
         return distance(from, to) / speed;
     }

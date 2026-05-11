@@ -153,7 +153,7 @@ std::shared_ptr<Planner> create_planner(const Config& config) {
     if (config.planner.type == "euclidean") {
         return std::make_shared<EuclideanPlanner>();
     }
-    return std::make_shared<EuclideanPlanner>();
+    throw std::runtime_error("Unsupported planner type: " + config.planner.type);
 }
 
 }  // namespace cbba

@@ -2,16 +2,17 @@
 
 #include <algorithm>
 #include <random>
+#include <stdexcept>
 
 namespace cbba {
 namespace {
 
 constexpr double kMinStartTime = 0.0;  // Clamp negative time windows to zero.
 
-int index_of(const std::vector<std::string>& values, const std::string& target, int fallback = 0) {
+int index_of(const std::vector<std::string>& values, const std::string& target) {
     auto it = std::find(values.begin(), values.end(), target);
     if (it == values.end()) {
-        return fallback;
+        return -1;
     }
     return static_cast<int>(std::distance(values.begin(), it));
 }
@@ -28,23 +29,32 @@ void create_agents_and_tasks(int num_agents, int num_tasks, const WorldInfo& wor
     agents.clear();
     tasks.clear();
 
+    const int quad_type = index_of(config.agent_types, "quad");
+    const int car_type = index_of(config.agent_types, "car");
+    const int track_type = index_of(config.task_types, "track");
+    const int rescue_type = index_of(config.task_types, "rescue");
+
+    if (quad_type < 0 || car_type < 0 || track_type < 0 || rescue_type < 0) {
+        throw std::runtime_error("Config must define quad, car, track, and rescue types.");
+    }
+
     Agent quad_default;
-    quad_default.agent_type = index_of(config.agent_types, "quad");
+    quad_default.agent_type = quad_type;
     quad_default.nom_velocity = config.quad_default.nom_velocity;
 
     Agent car_default;
-    car_default.agent_type = index_of(config.agent_types, "car");
+    car_default.agent_type = car_type;
     car_default.nom_velocity = config.car_default.nom_velocity;
 
     Task track_default;
-    track_default.task_type = index_of(config.task_types, "track");
+    track_default.task_type = track_type;
     track_default.task_value = config.track_default.task_value;
     track_default.start_time = config.track_default.start_time;
     track_default.end_time = config.track_default.end_time;
     track_default.duration = config.track_default.duration;
 
     Task rescue_default;
-    rescue_default.task_type = index_of(config.task_types, "rescue", track_default.task_type);
+    rescue_default.task_type = rescue_type;
     rescue_default.task_value = config.rescue_default.task_value;
     rescue_default.start_time = config.rescue_default.start_time;
     rescue_default.end_time = config.rescue_default.end_time;
@@ -72,6 +82,7 @@ void create_agents_and_tasks(int num_agents, int num_tasks, const WorldInfo& wor
         task.y = random_double(rng, world.limit_y[0], world.limit_y[1]);
         task.z = 0.0;
         task.start_time = random_double(rng, 0.0, latest_start);
+        // Mirror Python helper: end_time is derived from randomized start_time + duration.
         task.end_time = task.start_time + task.duration;
         tasks.push_back(task);
     }
@@ -82,12 +93,19 @@ void create_agents_and_tasks_homogeneous(int num_agents, int num_tasks, const Wo
     agents.clear();
     tasks.clear();
 
+    const int quad_type = index_of(config.agent_types, "quad");
+    const int track_type = index_of(config.task_types, "track");
+
+    if (quad_type < 0 || track_type < 0) {
+        throw std::runtime_error("Config must define quad and track types.");
+    }
+
     Agent quad_default;
-    quad_default.agent_type = index_of(config.agent_types, "quad");
+    quad_default.agent_type = quad_type;
     quad_default.nom_velocity = config.quad_default.nom_velocity;
 
     Task track_default;
-    track_default.task_type = index_of(config.task_types, "track");
+    track_default.task_type = track_type;
     track_default.task_value = config.track_default.task_value;
     track_default.start_time = 0.0;
     track_default.end_time = 0.0;
