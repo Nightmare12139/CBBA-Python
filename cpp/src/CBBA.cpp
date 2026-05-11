@@ -60,7 +60,8 @@ std::pair<std::vector<std::vector<int>>, std::vector<std::vector<double>>> CBBA:
         }
 
         if ((iter_idx - iter_prev) > (2 * num_agents_)) {
-            std::cerr << "Algorithm did not converge due to communication trouble." << std::endl;
+            std::cerr << "Algorithm did not converge within expected iterations (iter="
+                      << iter_idx << ", last_update=" << iter_prev << ")." << std::endl;
             done_flag = true;
         } else if ((iter_idx - iter_prev) > num_agents_) {
             done_flag = true;
@@ -265,6 +266,11 @@ std::vector<std::vector<int>> CBBA::communicate(const std::vector<std::vector<in
     auto y = old_y;
 
     const double epsilon = 1e-5;
+    const auto format_state = [&](const std::string& context, int i, int k, int j) {
+        return context + " (i=" + std::to_string(i) + ", k=" + std::to_string(k) +
+               ", j=" + std::to_string(j) + ", z=" + std::to_string(z[i][j]) +
+               ", old_z=" + std::to_string(old_z[k][j]) + ").";
+    };
 
     for (int k = 0; k < num_agents_; ++k) {
         for (int i = 0; i < num_agents_; ++i) {
@@ -301,7 +307,8 @@ std::vector<std::vector<int>> CBBA::communicate(const std::vector<std::vector<in
                             z[i][j] = old_z[k][j];
                             y[i][j] = old_y[k][j];
                         } else {
-                            throw std::runtime_error("Unknown winner value in communication (entry 1-4).");
+                            throw std::runtime_error(format_state("Unexpected winner value while sender owns task",
+                                                                 i, k, j));
                         }
                     } else if (old_z[k][j] == i) {
                         if (z[i][j] == i) {
@@ -317,7 +324,8 @@ std::vector<std::vector<int>> CBBA::communicate(const std::vector<std::vector<in
                         } else if (z[i][j] == -1) {
                             continue;
                         } else {
-                            throw std::runtime_error("Unknown winner value in communication (entry 5-8).");
+                            throw std::runtime_error(format_state("Unexpected winner value while sender assigns to receiver",
+                                                                 i, k, j));
                         }
                     } else if (old_z[k][j] > -1) {
                         if (z[i][j] == i) {
@@ -353,8 +361,6 @@ std::vector<std::vector<int>> CBBA::communicate(const std::vector<std::vector<in
                                 } else if (time_mat[k][old_z[k][j]] < time_mat_new[i][old_z[k][j]]) {
                                     z[i][j] = -1;
                                     y[i][j] = -1;
-                                } else {
-                                    throw std::runtime_error("Unknown condition in communication (entry 12).");
                                 }
                             } else {
                                 if (time_mat[k][old_z[k][j]] > time_mat_new[i][old_z[k][j]]) {
@@ -375,7 +381,8 @@ std::vector<std::vector<int>> CBBA::communicate(const std::vector<std::vector<in
                                 y[i][j] = old_y[k][j];
                             }
                         } else {
-                            throw std::runtime_error("Unknown winner value in communication (entry 9-13).");
+                            throw std::runtime_error(format_state("Unexpected winner value while sender reports other winner",
+                                                                 i, k, j));
                         }
                     } else if (old_z[k][j] == -1) {
                         if (z[i][j] == i) {
@@ -391,10 +398,11 @@ std::vector<std::vector<int>> CBBA::communicate(const std::vector<std::vector<in
                         } else if (z[i][j] == -1) {
                             continue;
                         } else {
-                            throw std::runtime_error("Unknown winner value in communication (entry 14-17).");
+                            throw std::runtime_error(format_state("Unexpected winner value while no winner reported",
+                                                                 i, k, j));
                         }
                     } else {
-                        throw std::runtime_error("Unknown winner value in communication.");
+                        throw std::runtime_error(format_state("Unexpected winner value in communication", i, k, j));
                     }
                 }
 

@@ -7,7 +7,8 @@
 namespace cbba {
 namespace {
 
-constexpr double kMinStartTime = 0.0;  // Clamp negative time windows to zero.
+constexpr double kMinStartTime = 0.0;  // Clamp latest_start to non-negative values.
+constexpr unsigned int kRandomSeed = 42;  // Deterministic seed for reproducible examples.
 
 int index_of(const std::vector<std::string>& values, const std::string& target) {
     auto it = std::find(values.begin(), values.end(), target);
@@ -64,7 +65,7 @@ void create_agents_and_tasks(int num_agents, int num_tasks, const WorldInfo& wor
     rescue_default.end_time = config.rescue_default.end_time;
     rescue_default.duration = config.rescue_default.duration;
 
-    std::mt19937 rng(42);
+    std::mt19937 rng(kRandomSeed);
 
     for (int idx_agent = 0; idx_agent < num_agents; ++idx_agent) {
         Agent agent = (static_cast<double>(idx_agent) / num_agents <= 0.5) ? quad_default : car_default;
@@ -119,7 +120,7 @@ void create_agents_and_tasks_homogeneous(int num_agents, int num_tasks, const Wo
     track_default.end_time = 0.0;
     track_default.duration = 0.0;
 
-    std::mt19937 rng(42);
+    std::mt19937 rng(kRandomSeed);
 
     for (int idx_agent = 0; idx_agent < num_agents; ++idx_agent) {
         Agent agent = quad_default;
