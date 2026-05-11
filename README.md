@@ -131,6 +131,30 @@ An example without task time window is shown below.
 ```
 
 
+C++ Implementation
+=================
+
+A lightweight C++ implementation lives in [`cpp/`](./cpp) and keeps the same JSON configuration
+format as the Python version. It adds two optional configuration blocks:
+
+* `PLANNER`: selects the path planner (default `euclidean`).
+* `DMG`: applies diminishing marginal gain so a single agent is discouraged from taking too many tasks.
+
+Example build and run:
+```
+$ cd cpp
+$ cmake -S . -B build
+$ cmake --build build
+$ ./build/cbba_example_01 ../config_example_cpp_01.json
+```
+
+DMG configuration fields:
+* `ENABLED`: enable/disable diminishing marginal gain.
+* `MODE`: `exp` (default), `linear`, or `inverse`.
+* `PENALTY_COEF`: penalty strength applied as the task count grows.
+* `MAX_TASKS`: recommended task count before extra penalty is applied.
+
+
 Example
 =======
 
