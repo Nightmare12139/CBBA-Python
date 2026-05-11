@@ -6,6 +6,8 @@
 namespace cbba {
 namespace {
 
+constexpr double kMinStartTime = 0.0;  // Clamp negative time windows to zero.
+
 int index_of(const std::vector<std::string>& values, const std::string& target, int fallback = 0) {
     auto it = std::find(values.begin(), values.end(), target);
     if (it == values.end()) {
@@ -61,7 +63,7 @@ void create_agents_and_tasks(int num_agents, int num_tasks, const WorldInfo& wor
 
     const double max_end = std::max(config.track_default.end_time, config.rescue_default.end_time);
     const double max_duration = std::max(config.track_default.duration, config.rescue_default.duration);
-    const double latest_start = std::max(0.0, max_end - max_duration);
+    const double latest_start = std::max(kMinStartTime, max_end - max_duration);
 
     for (int idx_task = 0; idx_task < num_tasks; ++idx_task) {
         Task task = (static_cast<double>(idx_task) / num_tasks <= 0.5) ? track_default : rescue_default;

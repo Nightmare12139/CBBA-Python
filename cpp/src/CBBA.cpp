@@ -58,9 +58,9 @@ std::pair<std::vector<std::vector<int>>, std::vector<std::vector<double>>> CBBA:
             }
         }
 
-        if ((iter_idx - iter_prev) > num_agents_) {
+        if ((iter_idx - iter_prev) > (2 * num_agents_)) {
             done_flag = true;
-        } else if ((iter_idx - iter_prev) > (2 * num_agents_)) {
+        } else if ((iter_idx - iter_prev) > num_agents_) {
             done_flag = true;
         } else {
             ++iter_idx;
@@ -262,7 +262,7 @@ std::vector<std::vector<int>> CBBA::communicate(const std::vector<std::vector<in
     auto z = old_z;
     auto y = old_y;
 
-    const double epsilon = 10e-6;
+    const double epsilon = 1e-5;
 
     for (int k = 0; k < num_agents_; ++k) {
         for (int i = 0; i < num_agents_; ++i) {

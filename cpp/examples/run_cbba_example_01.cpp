@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -8,12 +9,15 @@
 #include "WorldInfo.h"
 
 int main(int argc, char** argv) {
-    std::string config_path = "../config_example_cpp_01.json";
+    std::filesystem::path config_path;
     if (argc > 1) {
         config_path = argv[1];
+    } else {
+        const auto exe_dir = std::filesystem::absolute(std::filesystem::path(argv[0])).parent_path();
+        config_path = exe_dir / ".." / ".." / "config_example_cpp_01.json";
     }
 
-    cbba::Config config = cbba::load_config(config_path);
+    cbba::Config config = cbba::load_config(config_path.string());
     auto planner = cbba::create_planner(config);
     cbba::CBBA solver(config, planner);
 
