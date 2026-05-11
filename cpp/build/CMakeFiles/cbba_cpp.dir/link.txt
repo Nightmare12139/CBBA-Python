@@ -1,2 +1,0 @@
-/usr/bin/ar qc libcbba_cpp.a CMakeFiles/cbba_cpp.dir/src/CBBA.cpp.o CMakeFiles/cbba_cpp.dir/src/Config.cpp.o CMakeFiles/cbba_cpp.dir/src/HelperLibrary.cpp.o
-/usr/bin/ranlib libcbba_cpp.a
