@@ -22,5 +22,16 @@
         "START_TIME": 0,
         "END_TIME": 150,
         "DURATION": 5
+    },
+
+    "PLANNER": {
+        "TYPE": "euclidean"
+    },
+
+    "DMG": {
+        "ENABLED": false,
+        "MODE": "exp",
+        "PENALTY_COEF": 0.2,
+        "MAX_TASKS": 0
     }
 }
